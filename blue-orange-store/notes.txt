@@ -1,0 +1,50 @@
+export class FilterProductsDto extends BaseFilterDto {
+  @ApiProperty()
+  @IsOptional()
+  @Min(0)
+  readonly minPrice: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsPositive()
+  readonly maxPrice: number;
+
+  @ApiProperty({ enum: ['price', 'id'] })
+  @ValidateIf((item) => item.order)
+  @IsEnum(['price', 'id'])
+  readonly orderBy: string;
+
+  @ApiProperty({ enum: ['ASC', 'DESC'] })
+  @ValidateIf((item) => item.orderBy)
+  @IsEnum(['ASC', 'DESC'])
+  readonly order: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  readonly brandId: number;
+}
+
+async findAll(params?: FilterProductsDto) {
+    const { limit, offset, maxPrice, minPrice, orderBy, order, brandId } =
+      params;
+    const findOptions: FindManyOptions<Product> = {};
+
+    const where: FindConditions<Product> = {};
+    if (minPrice && maxPrice) {
+      where.price = Between(minPrice, maxPrice);
+    } else if (minPrice) {
+      where.price = MoreThanOrEqual(minPrice);
+    } else if (maxPrice) {
+      where.price = LessThanOrEqual(maxPrice);
+    }
+
+    if (brandId) where.brand = { id: brandId };
+    if (orderBy && order) findOptions.order = { [orderBy]: order };
+    findOptions.where = where;
+    findOptions.skip = offset;
+    findOptions.take = limit;
+    findOptions.relations = ['brand', 'categories'];
+
+    return await this.productRepository.find(findOptions);
+  }

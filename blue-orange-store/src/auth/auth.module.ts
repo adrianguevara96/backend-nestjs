@@ -24,32 +24,28 @@ import { Auth } from './auth.entity';
 import config from './../config';
 
 @Module({
-    controllers: [
-        AuthController
-    ],
-    exports: [
-
-    ],
-    imports: [
-        UsersModule,
-        PassportModule,
-        TypeOrmModule.forFeature([Auth]),
-        JwtModule.registerAsync({
-          inject: [config.KEY],
-          useFactory: (configService: ConfigType<typeof config>) => {
-            return {
-              secret: configService.jwt.secret,
-              signOptions: {
-                expiresIn: configService.jwt.expires,
-              },
-            };
+  controllers: [AuthController],
+  exports: [],
+  imports: [
+    UsersModule,
+    PassportModule,
+    TypeOrmModule.forFeature([Auth]),
+    JwtModule.registerAsync({
+      inject: [config.KEY],
+      useFactory: (configService: ConfigType<typeof config>) => {
+        return {
+          secret: configService.jwt.secret,
+          signOptions: {
+            expiresIn: configService.jwt.expires,
           },
-        }),
-    ],
-    providers: [
-        AuthService,
-        // LocalStrategy,
-        // JwtStrategy
-    ]
+        };
+      },
+    }),
+  ],
+  providers: [
+    AuthService,
+    // LocalStrategy,
+    // JwtStrategy
+  ],
 })
 export class AuthModule {}

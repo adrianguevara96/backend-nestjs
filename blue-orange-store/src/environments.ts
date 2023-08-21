@@ -1,7 +1,7 @@
 export const environments = {
-    develop: '.develop.env',
-    staging: '.staging.env',
-    production: '.env',
+  develop: '.develop.env',
+  staging: '.staging.env',
+  production: '.env',
 };
 
 // windows

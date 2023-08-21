@@ -1,89 +1,95 @@
-import { Injectable,
-        NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
+import { Repository, FindManyOptions } from 'typeorm';
 
 import { User } from './user.entity';
-import { CreateUserDTO, UpdateUserDTO } from './dto/user.dto';
+import { CreateUserDTO, FilterUsersDTO, UpdateUserDTO } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
-    constructor(
-        @InjectRepository(User) private userRepo: Repository<User>
-    ){}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-    async findAll(limit:number, offset:number) {
-        const users = await this.userRepo.find({
-            take: limit,
-            skip: offset
-        });
+  async findAll(params?: FilterUsersDTO) {
+    // options
+    const options: FindManyOptions<User> = {};
 
-        if(users.length == 0) {
-            throw new NotFoundException('users not found');
-        }
-
-        return {
-            message: 'users found',
-            data: users,
-        };
+    if (params) {
+      // pagination
+      const { limit, offset } = params;
+      options.take = limit;
+      options.skip = offset;
+    } else {
+      options.take = 10;
+      options.skip = 0;
     }
 
-    async findOne(id: string) {
-        const userFound = await this.userRepo.findOneBy({ id });
+    const users = await this.userRepo.find(options);
 
-        if(!userFound) {
-            throw new NotFoundException('user not found');
-        }
-
-        return {
-            message: 'user found',
-            data: userFound,
-        };
+    if (users.length == 0) {
+      throw new NotFoundException('users not found');
     }
 
-    async create(data: CreateUserDTO) {
-        const newUser = this.userRepo.create(data);
-        console.log("new user in create: ", newUser);
+    return {
+      message: 'users found',
+      data: users,
+    };
+  }
 
-        return {
-            message: 'user added',
-            data: await this.userRepo.save(newUser),
-        };
+  async findOne(id: string) {
+    const userFound = await this.userRepo.findOneBy({ id });
+
+    if (!userFound) {
+      throw new NotFoundException('user not found');
     }
 
-    async update(id: string, data: UpdateUserDTO) {
-        const user = await this.userRepo.findOneBy({ id });
+    return {
+      message: 'user found',
+      data: userFound,
+    };
+  }
 
-        if(!data.password) {
-            delete user.password;
-        }
-        
-        console.log("user in update: ", user);
+  async create(data: CreateUserDTO) {
+    const newUser = this.userRepo.create(data);
+    console.log('new user in create: ', newUser);
 
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+    return {
+      message: 'user added',
+      data: await this.userRepo.save(newUser),
+    };
+  }
 
-        this.userRepo.merge(user, data);
+  async update(id: string, data: UpdateUserDTO) {
+    const user = await this.userRepo.findOne({ where: { id: id } });
 
-        return {
-            message: 'user updated',
-            data: await this.userRepo.save(user),
-        };
+    if (!data.password) {
+      delete user.password;
     }
 
-    async delete(id: string) {
-        const user = await this.userRepo.findOneBy({ id });
-        console.log("user in delete: ", user);
+    console.log('user in update: ', user);
 
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-
-        return {
-            message: 'user deleted',
-            data: await this.userRepo.delete(user.id),
-        };
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
+
+    this.userRepo.merge(user, data);
+
+    return {
+      message: 'user updated',
+      data: await this.userRepo.save(user),
+    };
+  }
+
+  async delete(id: string) {
+    const user = await this.userRepo.findOneBy({ id });
+    console.log('user in delete: ', user);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      message: 'user deleted',
+      data: await this.userRepo.delete(user.id),
+    };
+  }
 }
