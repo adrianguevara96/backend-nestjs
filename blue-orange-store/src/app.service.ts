@@ -5,4 +5,8 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
+
+  testGuard(): string {
+    return 'Test guard sucessful';
+  }
 }

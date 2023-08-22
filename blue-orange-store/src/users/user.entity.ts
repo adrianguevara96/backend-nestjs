@@ -28,8 +28,8 @@ export class User {
   @IsEmail()
   email: string;
 
+  @Exclude()
   @Column({ type: 'varchar', length: 255 })
-  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Column({ type: 'varchar', length: 255 })
