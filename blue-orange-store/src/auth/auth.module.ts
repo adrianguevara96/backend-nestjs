@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -14,14 +15,16 @@ import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 
 // entity
-import { Auth } from './auth.entity';
+import { LocalAuth, OAuth } from './auth.entity';
 
 // strategies
-// import { LocalStrategy } from './strategies/local.strategy';
-// import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JWTStrategy } from './strategies/jwt.strategy';
 
 // config
 import config from './../config';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { User } from 'src/users/user.entity';
 
 @Module({
   controllers: [AuthController],
@@ -29,7 +32,7 @@ import config from './../config';
   imports: [
     UsersModule,
     PassportModule,
-    TypeOrmModule.forFeature([Auth]),
+    TypeOrmModule.forFeature([LocalAuth, OAuth, User]),
     JwtModule.registerAsync({
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
@@ -44,8 +47,9 @@ import config from './../config';
   ],
   providers: [
     AuthService,
-    // LocalStrategy,
-    // JwtStrategy
+    LocalStrategy,
+    JWTStrategy,
+    GoogleStrategy
   ],
 })
 export class AuthModule {}

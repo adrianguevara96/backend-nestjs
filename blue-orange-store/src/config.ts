@@ -17,5 +17,10 @@ export default registerAs('config', () => {
       expires: process.env.JWT_EXPIRES_IN,
     },
     apiKey: process.env.API_KEY,
+    google: {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      callback_url: process.env.GOOGLE_CALLBACK_URL,
+    },
   };
 });

@@ -7,6 +7,10 @@ export class AppService {
   }
 
   testGuard(): string {
-    return 'Test guard sucessful';
+    return 'Test guard successful';
+  }
+
+  testJWTGuard(): string {
+    return 'Test JWT successful';
   }
 }

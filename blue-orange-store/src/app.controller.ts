@@ -4,9 +4,13 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { ApiKeyGuard } from './auth/guards/api-key/api-key.guard';
 import { Public } from './auth/decorators/public.decorator';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { JwtGuard } from './auth/guards/jwt/jwt.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Test connection')
 @UseGuards(ApiKeyGuard)
+// @UseGuards(JwtGuard)
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -24,5 +28,14 @@ export class AppController {
   @ApiOperation({ summary: 'Guard test' })
   getGuard(): string {
     return this.appService.testGuard();
+  }
+
+  @Public()
+  @UseGuards(AuthGuard('jwt'))
+  @Get('jwt')
+  @ApiResponse({ status: 200, description: 'JWT decode successful' })
+  @ApiOperation({ summary: 'JWT test' })
+  getJWTGuard(): string {
+    return this.appService.testJWTGuard();
   }
 }
