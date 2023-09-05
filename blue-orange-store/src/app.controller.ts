@@ -7,9 +7,12 @@ import { Public } from './auth/decorators/public.decorator';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { JwtGuard } from './auth/guards/jwt/jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './auth/guards/roles/roles.guard';
+import { Role } from './auth/models/role.model';
+import { Roles } from './auth/decorators/role.decorator';
 
 @ApiTags('Test connection')
-@UseGuards(ApiKeyGuard)
+@UseGuards(ApiKeyGuard, JwtGuard, RolesGuard)
 // @UseGuards(JwtGuard)
 @Controller()
 export class AppController {
@@ -37,5 +40,13 @@ export class AppController {
   @ApiOperation({ summary: 'JWT test' })
   getJWTGuard(): string {
     return this.appService.testJWTGuard();
+  }
+
+  @Get('role')
+  @Roles(Role.USER)
+  @ApiResponse({ status: 200, description: 'Role successful' })
+  @ApiOperation({ summary: 'Role test' })
+  getRoleTest(): string {
+    return this.appService.testRole();
   }
 }

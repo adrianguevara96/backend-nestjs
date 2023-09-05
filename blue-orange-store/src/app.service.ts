@@ -13,4 +13,8 @@ export class AppService {
   testJWTGuard(): string {
     return 'Test JWT successful';
   }
+
+  testRole(): string {
+    return 'Test Role sucessful';
+  }
 }
