@@ -42,10 +42,7 @@ export class UsersService {
       throw new NotFoundException('user not found');
     }
 
-    return {
-      message: 'user found',
-      data: userFound,
-    };
+    return userFound;
   }
 
   async findByEmail(email: string) {
