@@ -11,7 +11,7 @@ import {
 import { IsEmail } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
-import { Order } from 'src/orders/order.entity';
+import { Order } from './../orders/order.entity';
 
 @Entity('users')
 export class User {

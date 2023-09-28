@@ -1,5 +1,5 @@
-import { Brand } from 'src/brands/brand.entity';
-import { Category } from 'src/categories/category.entity';
+import { Brand } from './../brands/brand.entity';
+import { Category } from './../categories/category.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

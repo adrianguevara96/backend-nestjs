@@ -99,11 +99,6 @@ describe('UsersController & UsersService', () => {
           provide: 'UserRepository',
           useValue: { Repository },
         },
-        // TeamsService,
-        // {
-        //   provide: 'TeamRepository',
-        //   useValue: { Repository },
-        // },
         // UsersTeamsService,
         // {
         //   provide: 'UserTeamsRepository',
